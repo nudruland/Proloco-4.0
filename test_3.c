@@ -8,7 +8,7 @@ prenotati lista_prenotati[SIZE_LISTA_PRENOTATI];
 tavolo lista_tavoli[MAX_NUMBER_PLANCE];
 FILE *fp;
 
-char name_file[] = "prenotati.txt";
+char name_file[] = "to_ignore/prenotati.txt";
 int number_prenotazioni = 0;
 int number_combined = 0;
 int number_tavoli = 0;
@@ -177,7 +177,7 @@ void composizione_tavoli(void)
                 sum.n_posti_over = local_check % MAX_N_PERSON_X_PLANCIA;
                 sum.n_plance_intere = local_check / MAX_N_PERSON_X_PLANCIA;
                 local_check = sum.n_plance_intere + lista_prenotati[i].n_plance_intere + lista_prenotati[k].n_plance_intere;
-                if(sum.n_posti_over > MIN_NUMBER_X_PLANCIA && sum.n_posti_over < MAX_NUMBER_X_PLANCIA && (local_check < 10) /*&& !strcmp(lista_prenotati[i].commento, lista_prenotati[k].commento)*/)
+                if(sum.n_posti_over >= MIN_NUMBER_X_PLANCIA && sum.n_posti_over <= MAX_NUMBER_X_PLANCIA && (local_check < 10) /*&& !strcmp(lista_prenotati[i].commento, lista_prenotati[k].commento)*/)
                 {
                     number_plance += local_check + 1;
 
@@ -197,11 +197,11 @@ void composizione_tavoli(void)
             }
         }
 
-        if(!lista_prenotati[i].composta)
+        if(!lista_prenotati[k].composta)
         {
             
 
-            lista_prenotati[i].composta = true;
+            lista_prenotati[k].composta = true;
 
             lista_tavoli[number_tavoli].numero_plance = lista_prenotati[i].n_plance_intere + (lista_prenotati[i].n_posti_over > 0)*1;
             lista_tavoli[number_tavoli].posti_occupati = lista_prenotati[i].numero;
