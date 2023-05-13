@@ -8,7 +8,7 @@ prenotati lista_prenotati[SIZE_LISTA_PRENOTATI];
 tavolo lista_tavoli[MAX_NUMBER_PLANCE];
 FILE *fp;
 
-char name_file[] = "to_ignore/prenotati.txt";
+char name_file[] = "to_ignore/prenotati.csv";
 int number_prenotazioni = 0;
 int number_combined = 0;
 int number_tavoli = 0;
