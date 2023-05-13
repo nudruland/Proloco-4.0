@@ -165,11 +165,32 @@ void composizione_tavoli(void)
     int i = 0;
     int k = 0;
     somma_check sum;
-    int local_check;
-    /*for(i = 0; i < number_combined; i++)
+    int local_check = 0;
+    
+    for(i = 0; i < number_combined; i++)
     {
-        if((lista_prenotati[i].n_posti_over == 0 ||(lista_prenotati[i].n_posti_over >= MIN_NUMBER_X_PLANCIA && lista_prenotati[i].n_posti_over <= MAX_NUMBER_X_PLANCIA)) )
-    }*/
+        if((lista_prenotati[i].n_posti_over == 0 ||((lista_prenotati[i].n_posti_over > MIN_NUMBER_X_PLANCIA + 1) && lista_prenotati[i].n_posti_over <= MAX_NUMBER_X_PLANCIA)))
+        {
+            if(lista_prenotati[i].n_posti_over)
+            {
+                number_plance += lista_prenotati[i].n_plance_intere + 1;
+                lista_tavoli[number_tavoli].numero_plance = lista_prenotati[i].n_plance_intere + 1;
+            }else{
+                number_plance += lista_prenotati[i].n_plance_intere;
+                lista_tavoli[number_tavoli].numero_plance = lista_prenotati[i].n_plance_intere;
+            }
+            
+            lista_prenotati[i].composta = true;
+
+            lista_tavoli[number_tavoli].posti_occupati = lista_prenotati[i].numero;
+            lista_tavoli[number_tavoli].posti_vuoti = (lista_tavoli[number_tavoli].numero_plance) * MAX_N_PERSON_X_PLANCIA - lista_tavoli[number_tavoli].posti_occupati;
+            
+            strcpy(lista_tavoli[number_tavoli].nome_1, lista_prenotati[i].nome);
+            strcpy(lista_tavoli[number_tavoli].commento, lista_prenotati[i].commento);
+
+            number_tavoli++;
+        }
+    }
 
     for(i = 0; i < number_combined; i++)
     {
