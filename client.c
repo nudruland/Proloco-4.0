@@ -10,12 +10,14 @@
 #include <arpa/inet.h>
 #include <sys/wait.h>
 #include <signal.h>
-#include "header.h"
 
+#include "header.h"
 
 #define PORT "8080" // the port users will be connecting to
 
 #define BACKLOG 10 // how many pending connections queue will hold
+
+uint8_t packet_to_send[SIZE_PACKET_TO_SEND];
 
 void sigchld_handler(int s)
 {
@@ -38,9 +40,22 @@ void *get_in_addr(struct sockaddr *sa)
     return &(((struct sockaddr_in6*)sa)->sin6_addr);
 }
 
-char *build_packet_to_send(tavolo mytavolo)
+void build_packet_to_send(tavolo mytavolo)
 {
-    //char *mypacket = (char *)malloc()
+    packet_to_send[0] = PACKET_NEW_TABLE;
+    packet_to_send[1] = mytavolo.id_plancia;
+    packet_to_send[2] = mytavolo.numero_plance;
+    packet_to_send[3] = mytavolo.numero_plance * 8;
+    packet_to_send[4] = mytavolo.posti_vuoti;
+    packet_to_send[5] = mytavolo.posti_occupati;
+    memcpy((packet_to_send + 6), &(mytavolo.nome_1), sizeof(mytavolo.nome_1));
+    return;
+}
+
+void build_packet_to_send_fake()
+{
+    packet_to_send[0] = PACKET_TO_STOP;
+    return;
 }
 
 int main(void)
@@ -53,6 +68,7 @@ int main(void)
     int yes=1;
     char s[INET6_ADDRSTRLEN];
     int rv;
+    int c = 0;
 
     txt_read();
     aggregazione_vicino();
@@ -131,10 +147,22 @@ int main(void)
         
         if (!fork()) { // this is the child process
             close(sockfd); // child doesn't need the listener
-            if (send(new_fd, lista_prenotati[0].nome, strlen(lista_prenotati[0].nome), 0) == -1)
+            if(!c)
+            {
+                build_packet_to_send(lista_tavoli[0]);
+                if (send(new_fd, packet_to_send, sizeof(packet_to_send), 0) == -1)
+                //if (send(new_fd, "Hello, World!", 13, 0) == -1)
+                {
+                    perror("send");
+                }
+                c++;
+            }else{
+            build_packet_to_send_fake();
+            if (send(new_fd, packet_to_send, sizeof(packet_to_send), 0) == -1)
             //if (send(new_fd, "Hello, World!", 13, 0) == -1)
             {
                 perror("send");
+            }
             }
             close(new_fd);
             exit(0);

@@ -19,9 +19,13 @@
 #define MAX_N_PERSON_X_PLANCIA          8
 #define MAX_N_PERSON_SINGLE_TAVOLO      6  
 #define MIN_NUMBER_X_PLANCIA            5
-#define MAX_NUMBER_X_PLANCIA            8 //questo serve a quando facciamo le coppie, qua accoppiati al massimo     
+#define MAX_NUMBER_X_PLANCIA            8 //questo serve a quando facciamo le coppie, qua accoppiati al massimo    
 
 #define VICINO_A                        " vicino a"
+
+#define SIZE_PACKET_TO_SEND             4*sizeof(uint8_t) + SIZE_NAME + 1
+#define PACKET_NEW_TABLE                0x01
+#define PACKET_TO_STOP                  0x02
 
 typedef struct{
     int n_plance_intere;
@@ -50,6 +54,8 @@ typedef struct{
     bool composta;
     bool placed;
 } prenotati;
+
+extern uint8_t packet_to_send[SIZE_PACKET_TO_SEND];
 
 extern tavolo lista_tavoli[MAX_NUMBER_PLANCE];
 extern prenotati lista_prenotati[SIZE_LISTA_PRENOTATI];

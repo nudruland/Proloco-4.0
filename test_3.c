@@ -249,7 +249,7 @@ void composizione_tavoli(void)
     int result = truncate(file_to_w, 0);
     for(int i = 0; i < number_tavoli; i++)
     {
-        
+        lista_tavoli[i].id_plancia = (uint8_t)i;
         fprintf(fp,"TAVOLO %d: \tNUMERO PLANCE: %d\tPOSTI OCCUPATI: %d\tPOSTI VUOTI: %d\n\t\tPRIMO_NOME: %s\tSECONDO_NOME: %s\n\n", i + 1, lista_tavoli[i].numero_plance, lista_tavoli[i].posti_occupati, lista_tavoli[i].posti_vuoti, lista_tavoli[i].nome_1, lista_tavoli[i].nome_2);
         number_plance_true += lista_tavoli[i].numero_plance;
     }
