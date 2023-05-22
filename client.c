@@ -13,7 +13,7 @@
 #include "header.h"
 
 
-#define PORT "3490" // the port users will be connecting to
+#define PORT "8080" // the port users will be connecting to
 
 #define BACKLOG 10 // how many pending connections queue will hold
 
@@ -36,6 +36,11 @@ void *get_in_addr(struct sockaddr *sa)
     }
 
     return &(((struct sockaddr_in6*)sa)->sin6_addr);
+}
+
+char *build_packet_to_send(tavolo mytavolo)
+{
+    char *mypacket = (char *)malloc()
 }
 
 int main(void)

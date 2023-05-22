@@ -9,6 +9,7 @@ tavolo lista_tavoli[MAX_NUMBER_PLANCE];
 FILE *fp;
 
 char name_file[] = "to_ignore/prenotati.csv";
+char file_to_w[] = "to_ignore/tavoli.txt";
 int number_prenotazioni = 0;
 int number_combined = 0;
 int number_tavoli = 0;
@@ -104,7 +105,7 @@ void txt_read(void)
         number_prenotazioni++;
     }
     number_prenotazioni--;
-
+    int p = fclose(fp);
     return;
 }
 
@@ -171,7 +172,7 @@ void composizione_tavoli(void)
     {
         if((lista_prenotati[i].n_posti_over == 0 ||((lista_prenotati[i].n_posti_over > MIN_NUMBER_X_PLANCIA + 1) && lista_prenotati[i].n_posti_over <= MAX_NUMBER_X_PLANCIA)))
         {
-            if(lista_prenotati[i].n_posti_over)
+            if(lista_prenotati[i].n_posti_over > 0)
             {
                 number_plance += lista_prenotati[i].n_plance_intere + 1;
                 lista_tavoli[number_tavoli].numero_plance = lista_prenotati[i].n_plance_intere + 1;
@@ -204,9 +205,9 @@ void composizione_tavoli(void)
                 local_check = sum.n_plance_intere + lista_prenotati[i].n_plance_intere + lista_prenotati[k].n_plance_intere;
                 if((sum.n_posti_over == 0 ||(sum.n_posti_over >= MIN_NUMBER_X_PLANCIA && sum.n_posti_over <= MAX_NUMBER_X_PLANCIA)) && (local_check < 10) /*&& !strcmp(lista_prenotati[i].commento, lista_prenotati[k].commento)*/)
                 {
-                    if(sum.n_posti_over)
+                    if(sum.n_posti_over > 0)
                     {
-                        number_plance += local_check + 1;
+                        number_plance += (local_check + 1);
                         lista_tavoli[number_tavoli].numero_plance = local_check + 1;
                     }else{
                         number_plance += local_check;
@@ -243,14 +244,17 @@ void composizione_tavoli(void)
         }
         
     }
-
+    int number_plance_true = 0;
+    fp = fopen(file_to_w, "w");
+    int result = truncate(file_to_w, 0);
     for(int i = 0; i < number_tavoli; i++)
     {
-        printf("TAVLO %d: \tNUMERO PLANCE: %d\tPOSTI OCCUPATI: %d\tPOSTI VUOTI: %d\n\t\tPRIMO_NOME: %s\tSECONDO_NOME: %s", i + 1, lista_tavoli[i].numero_plance, lista_tavoli[i].posti_occupati, lista_tavoli[i].posti_vuoti, lista_tavoli[i].nome_1, lista_tavoli[i].nome_2);
-        printf("\n\n");
         
+        fprintf(fp,"TAVOLO %d: \tNUMERO PLANCE: %d\tPOSTI OCCUPATI: %d\tPOSTI VUOTI: %d\n\t\tPRIMO_NOME: %s\tSECONDO_NOME: %s\n\n", i + 1, lista_tavoli[i].numero_plance, lista_tavoli[i].posti_occupati, lista_tavoli[i].posti_vuoti, lista_tavoli[i].nome_1, lista_tavoli[i].nome_2);
+        number_plance_true += lista_tavoli[i].numero_plance;
     }
-    printf("PLANCE TOTALI: %d\n", number_plance);
+    int z = fclose(fp);
+    printf("PLANCE TOTALI: %d %d\n\n", number_plance, number_plance_true);
 
 }
 
@@ -258,12 +262,6 @@ void divisione_piazza(void)
 {
     
     //ordinarle
-    for(int i = 0; i < number_combined; i++)
-    {
-        printf("%s %d %d\n", lista_prenotati[i].nome, lista_prenotati[i].n_posti_over, lista_prenotati[i].numero);
-    }
-
-    printf("\n");
 
     /*bubbleSort(lista_prenotati, number_combined);
 

@@ -2,6 +2,7 @@
 #define _HEADER_H_
 
 #include <stdbool.h>
+#include <unistd.h>
 
 #define SIZE_NAME                       30
 #define SIZE_COMMENTO                   100
