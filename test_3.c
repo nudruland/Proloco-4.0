@@ -12,8 +12,8 @@ char name_file[] = "to_ignore/prenotati.csv";
 char file_to_w[] = "to_ignore/tavoli.txt";
 int number_prenotazioni = 0;
 int number_combined = 0;
-int number_tavoli = 0;
-int number_plance = 0;
+uint8_t number_tavoli = 0;
+uint8_t number_plance = 0;
 
 void bubbleSort(prenotati arr[], int n) {
     for (int i = 0; i < n - 1; i++) {
@@ -166,7 +166,7 @@ void composizione_tavoli(void)
     int i = 0;
     int k = 0;
     somma_check sum;
-    int local_check = 0;
+    uint8_t local_check = 0;
     
     for(i = 0; i < number_combined; i++)
     {

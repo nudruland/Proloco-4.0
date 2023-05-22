@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 #include <unistd.h>
+#include <stdint.h>
 
 #define SIZE_NAME                       30
 #define SIZE_COMMENTO                   100
@@ -28,10 +29,10 @@ typedef struct{
 }somma_check;
 
 typedef struct{
-    int id_plancia;
-    int numero_plance;
-    int posti_occupati;
-    int posti_vuoti;
+    uint8_t id_plancia;
+    uint8_t numero_plance;
+    uint8_t posti_occupati;
+    uint8_t posti_vuoti;
     char nome_1[SIZE_NAME];
     char nome_2[SIZE_NAME];
     char nome_3[SIZE_NAME];
@@ -54,8 +55,8 @@ extern tavolo lista_tavoli[MAX_NUMBER_PLANCE];
 extern prenotati lista_prenotati[SIZE_LISTA_PRENOTATI];
 extern int number_prenotazioni;
 extern int number_combined;
-extern int number_tavoli;
-extern int number_plance;
+extern uint8_t number_tavoli;
+extern uint8_t number_plance;
 
 void txt_read(void);
 void divisione_piazza(void);

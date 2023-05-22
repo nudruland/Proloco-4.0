@@ -40,7 +40,7 @@ void *get_in_addr(struct sockaddr *sa)
 
 char *build_packet_to_send(tavolo mytavolo)
 {
-    char *mypacket = (char *)malloc()
+    //char *mypacket = (char *)malloc()
 }
 
 int main(void)
