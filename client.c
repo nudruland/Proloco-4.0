@@ -69,6 +69,7 @@ int main(void)
     char s[INET6_ADDRSTRLEN];
     int rv;
     int c = 0;
+    int ca = 0;
 
     txt_read();
     aggregazione_vicino();
@@ -76,10 +77,13 @@ int main(void)
     divisione_piazza();
 
     memset(&hints, 0, sizeof hints);
-    hints.ai_family = AF_UNSPEC;
-    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_family = AF_UNSPEC; //this is to tell if IP è 4,6 o non specificato
+    hints.ai_socktype = SOCK_STREAM; //tcp/ip 
     hints.ai_flags = AI_PASSIVE; // use my IP
 
+    /*the following function is needed to associate the host (here NULL), PORT,
+    and the hints to servinfo.
+    */
     if ((rv = getaddrinfo(NULL, PORT, &hints, &servinfo)) != 0) {
         fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
         return 1;
@@ -94,12 +98,14 @@ int main(void)
         continue;
         }
 
+        //used to be sure that the port is free
         if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &yes,
         sizeof(int)) == -1) {
         perror("setsockopt");
         exit(1);
         }
 
+        //used to associate the socket to a specific local port. Use to listen
         if (bind(sockfd, p->ai_addr, p->ai_addrlen) == -1) {
         close(sockfd);
         perror("server: bind");
@@ -116,6 +122,8 @@ int main(void)
         exit(1);
     }
 
+    //this is used in order to listen which client want to connect to me.
+    //BACKLOG is the max number of client that i want to listen
     if (listen(sockfd, BACKLOG) == -1) {
         perror("listen");
         exit(1);
@@ -132,21 +140,27 @@ int main(void)
     
     printf("server: waiting for connections...\n"); 
     while(1) { // main accept() loop
-        sin_size = sizeof their_addr;
-        new_fd = accept(sockfd, (struct sockaddr *)&their_addr, &sin_size);
         
-        if (new_fd == -1) {
-            perror("accept");
-            continue;
-        }   
-
-        inet_ntop(their_addr.ss_family,
-        get_in_addr((struct sockaddr *)&their_addr),
-        s, sizeof s);
-        printf("server: got connection from %s\n", s);  
-        
-        if (!fork()) { // this is the child process
+        if(!ca)
+        {
+            sin_size = sizeof their_addr;
+            new_fd = accept(sockfd, (struct sockaddr *)&their_addr, &sin_size);
             close(sockfd); // child doesn't need the listener
+            if (new_fd == -1) {
+                perror("accept");
+                continue;
+            }else{
+                ca ++;
+            }   
+
+            inet_ntop(their_addr.ss_family,
+            get_in_addr((struct sockaddr *)&their_addr),
+            s, sizeof s);
+            printf("server: got connection from %s\n", s);
+        }  
+        
+        /*if (!fork()) {*/ // this is the child process
+            
             if(!c)
             {
                 build_packet_to_send(lista_tavoli[0]);
@@ -156,18 +170,21 @@ int main(void)
                     perror("send");
                 }
                 c++;
-            }else{
-            build_packet_to_send_fake();
-            if (send(new_fd, packet_to_send, sizeof(packet_to_send), 0) == -1)
-            //if (send(new_fd, "Hello, World!", 13, 0) == -1)
-            {
-                perror("send");
             }
+            
+            if(c == 1){
+                build_packet_to_send_fake();
+                if (send(new_fd, packet_to_send, sizeof(packet_to_send), 0) == -1)
+                //if (send(new_fd, "Hello, World!", 13, 0) == -1)
+                {
+                    perror("send");
+                }
+                c++;
             }
-            close(new_fd);
-            exit(0);
-        }
-        close(new_fd); // parent doesn't need this
+            //close(new_fd);
+            //exit(0);
+        
+        //close(new_fd); // parent doesn't need this
     }   
     return 0;
     }
