@@ -57,7 +57,6 @@ typedef struct{
 } prenotati;
 
 extern uint8_t packet_to_send[SIZE_PACKET_TO_SEND];
-extern uint8_t packet_to_send_total[SIZE_PACKET_TO_SEND * NUMBER_PACKET_TO_SEND_TOTAL];
 
 extern tavolo lista_tavoli[MAX_NUMBER_PLANCE];
 extern prenotati lista_prenotati[SIZE_LISTA_PRENOTATI];
@@ -70,7 +69,5 @@ void txt_read(void);
 void divisione_piazza(void);
 void aggregazione_vicino(void);
 void composizione_tavoli(void);
-void printChar_my(uint8_t *world, int end);
-
 
 #endif 
