@@ -23,7 +23,7 @@
 
 #define VICINO_A                        " vicino a"
 
-#define SIZE_PACKET_TO_SEND             (8*sizeof(uint8_t) + (2*SIZE_NAME)) 
+#define SIZE_PACKET_TO_SEND             (7*sizeof(uint8_t) + (SIZE_NAME)) 
 #define NUMBER_PACKET_TO_SEND_TOTAL     10
 #define PACKET_NEW_TABLE                0xFF
 #define PACKET_TO_STOP                  0x02
