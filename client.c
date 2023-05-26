@@ -18,6 +18,16 @@
 #define BACKLOG 10 // how many pending connections queue will hold
 
 uint8_t packet_to_send[SIZE_PACKET_TO_SEND];
+uint8_t packet_to_send_total[SIZE_PACKET_TO_SEND * NUMBER_PACKET_TO_SEND_TOTAL];
+
+void printChar_my(uint8_t *world, int end)
+{
+    for(int i = 0; i < end; i++)
+    {
+        printf("%c", (char)(*(world + i)));
+    }
+    printf("\n");
+}
 
 void sigchld_handler(int s)
 {
@@ -40,15 +50,26 @@ void *get_in_addr(struct sockaddr *sa)
     return &(((struct sockaddr_in6*)sa)->sin6_addr);
 }
 
-void build_packet_to_send(tavolo mytavolo)
+void build_packet_to_send(tavolo mytavolo, int i)
 {
+    int offset = 0;
+    memset(packet_to_send, 0x00, sizeof(packet_to_send));
     packet_to_send[0] = PACKET_NEW_TABLE;
     packet_to_send[1] = mytavolo.id_plancia;
     packet_to_send[2] = mytavolo.numero_plance;
     packet_to_send[3] = mytavolo.numero_plance * 8;
     packet_to_send[4] = mytavolo.posti_vuoti;
     packet_to_send[5] = mytavolo.posti_occupati;
-    memcpy((packet_to_send + 6), &(mytavolo.nome_1), sizeof(mytavolo.nome_1));
+    packet_to_send[6] = (uint8_t)strlen(mytavolo.nome_1);
+    memcpy((packet_to_send + 7), &(mytavolo.nome_1), packet_to_send[6]);
+
+    /*packet_to_send[8 + SIZE_NAME] = (uint8_t)strlen(mytavolo.nome_2);
+    memcpy((packet_to_send + 9 + SIZE_NAME), &(mytavolo.nome_2), packet_to_send[8 + SIZE_NAME]);*/
+
+    offset = i * SIZE_PACKET_TO_SEND;
+    printf("OFFSET: %d i: %d\n", offset, i);
+    memcpy(packet_to_send_total + offset, packet_to_send, sizeof(packet_to_send));
+    
     return;
 }
 
@@ -70,6 +91,7 @@ int main(void)
     int rv;
     int c = 0;
     int ca = 0;
+    int length_effectively = 0;
 
     txt_read();
     aggregazione_vicino();
@@ -77,7 +99,7 @@ int main(void)
     divisione_piazza();
 
     memset(&hints, 0, sizeof hints);
-    hints.ai_family = AF_UNSPEC; //this is to tell if IP è 4,6 o non specificato
+    hints.ai_family = AF_INET; //this is to tell if IP è 4,6 o non specificato
     hints.ai_socktype = SOCK_STREAM; //tcp/ip 
     hints.ai_flags = AI_PASSIVE; // use my IP
 
@@ -158,33 +180,44 @@ int main(void)
             s, sizeof s);
             printf("server: got connection from %s\n", s);
         }  
-        
-        /*if (!fork()) {*/ // this is the child process
-            
-            if(!c)
+
+        if(ca == 1)
+        {
+            /*build_packet_to_send(lista_tavoli[1]);
+            if (length_effectively = send(new_fd, packet_to_send, sizeof(packet_to_send), 0) == -1)
+            //if (send(new_fd, "Hello, World!", 13, 0) == -1)
             {
-                build_packet_to_send(lista_tavoli[0]);
-                if (send(new_fd, packet_to_send, sizeof(packet_to_send), 0) == -1)
-                //if (send(new_fd, "Hello, World!", 13, 0) == -1)
-                {
-                    perror("send");
-                }
-                c++;
+                perror("send");
+            }else{
+                printf("lunghezza pacchetto: %d \t la size define é: %d", length_effectively, SIZE_PACKET_TO_SEND);
+            }*/
+            memset(packet_to_send_total, 0x00, sizeof(packet_to_send_total));
+            for(int i = 0; i < 10/*number_tavoli*/; i++)
+            {
+                build_packet_to_send(lista_tavoli[i], i);
             }
-            
-            if(c == 1){
-                build_packet_to_send_fake();
-                if (send(new_fd, packet_to_send, sizeof(packet_to_send), 0) == -1)
-                //if (send(new_fd, "Hello, World!", 13, 0) == -1)
-                {
-                    perror("send");
-                }
-                c++;
+
+            if (length_effectively = send(new_fd, packet_to_send_total, sizeof(packet_to_send_total), 0) == -1)
+            //if (send(new_fd, "Hello, World!", 13, 0) == -1)
+            {
+                perror("send");
             }
-            //close(new_fd);
-            //exit(0);
-        
-        //close(new_fd); // parent doesn't need this
-    }   
+            ca++;
+        }
+        /*
+        if(ca == 2)
+        {
+            build_packet_to_send_fake();
+            if (length_effectively = send(new_fd, packet_to_send, sizeof(packet_to_send), 0) == -1)
+            //if (send(new_fd, "Hello, World!", 13, 0) == -1)
+            {
+                perror("send");
+            }else{
+                printf("lunghezza pacchetto: %d \t la size define é: %d\n", length_effectively, SIZE_PACKET_TO_SEND);
+            }
+            ca++;
+        }*/
+
+    }  
     return 0;
-    }
+}

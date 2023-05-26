@@ -23,8 +23,9 @@
 
 #define VICINO_A                        " vicino a"
 
-#define SIZE_PACKET_TO_SEND             4*sizeof(uint8_t) + SIZE_NAME + 1
-#define PACKET_NEW_TABLE                0x01
+#define SIZE_PACKET_TO_SEND             (8*sizeof(uint8_t) + (2*SIZE_NAME)) 
+#define NUMBER_PACKET_TO_SEND_TOTAL     10
+#define PACKET_NEW_TABLE                0xFF
 #define PACKET_TO_STOP                  0x02
 
 typedef struct{
@@ -56,6 +57,7 @@ typedef struct{
 } prenotati;
 
 extern uint8_t packet_to_send[SIZE_PACKET_TO_SEND];
+extern uint8_t packet_to_send_total[SIZE_PACKET_TO_SEND * NUMBER_PACKET_TO_SEND_TOTAL];
 
 extern tavolo lista_tavoli[MAX_NUMBER_PLANCE];
 extern prenotati lista_prenotati[SIZE_LISTA_PRENOTATI];
@@ -68,5 +70,7 @@ void txt_read(void);
 void divisione_piazza(void);
 void aggregazione_vicino(void);
 void composizione_tavoli(void);
+void printChar_my(uint8_t *world, int end);
+
 
 #endif 
