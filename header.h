@@ -69,5 +69,6 @@ void txt_read(void);
 void divisione_piazza(void);
 void aggregazione_vicino(void);
 void composizione_tavoli(void);
+void getNSocket(fd_set localmaster, int localfdmax, int locallistener, int locali);
 
 #endif 

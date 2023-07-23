@@ -42,6 +42,8 @@ void *get_in_addr(struct sockaddr *sa)
 
 void build_packet_to_send(tavolo mytavolo)
 {
+    //diocane
+    int a;
     packet_to_send[0] = PACKET_NEW_TABLE;
     packet_to_send[1] = mytavolo.id_plancia;
     packet_to_send[2] = mytavolo.numero_plance;
