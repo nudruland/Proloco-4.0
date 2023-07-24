@@ -16,33 +16,7 @@
 
 uint8_t packet_to_send[SIZE_PACKET_TO_SEND];
 
-void getNSocket(fd_set localmaster, int localfdmax, int locallistener, int locali){
-    // we got some data from a client
-    int j = 0u;
-    for (j = 0; j <= localfdmax; j++) {
-      // send to everyone!
-      if (FD_ISSET(j, & localmaster)) {
-        // except the listener and ourselves
-        if (j != locallistener && j != locali) {
-          //if (send(j, buf, nbytes, 0) == -1) {
-           // perror("send");
-          //}
-          perror("send");
-        }
-      }
-    }
-}
 
-void deleteclient(int localnbytes, int locali, fd_set localmaster){
-    if (localnbytes == 0) {
-      // connection closed
-      printf("selectserver: socket %d hung up\n", locali);
-    } else {
-      perror("recv");
-    }
-    close(locali); // bye!
-    FD_CLR(locali, & localmaster); // remove from master set                
-}
 
 // get sockaddr, IPv4 or IPv6:
 void * get_in_addr(struct sockaddr * sa) {
@@ -74,10 +48,10 @@ int main(void) {
 
   struct addrinfo hints, *ai, *p;
 
-      txt_read();
-    aggregazione_vicino();
-    composizione_tavoli();
-    divisione_piazza();
+  txt_read();
+  aggregazione_vicino();
+  composizione_tavoli();
+  divisione_piazza();
 
 
   FD_ZERO( & master); // clear the master and temp sets
@@ -150,13 +124,10 @@ int main(void) {
           if (newfd == -1) {
             perror("accept");
           } else {
-            FD_SET(newfd, & master); // add to master set
-            if (newfd > fdmax) { // keep track of the max
-              fdmax = newfd;
-            }
-            //qua possiamo iniziare ad inviare i dati quando abbiamo aggiornato
-            printf("selectserver: new connection from %s on socket %d\n", inet_ntop(remoteaddr.ss_family, get_in_addr((struct sockaddr * ) & remoteaddr), remoteIP, INET6_ADDRSTRLEN), newfd);
-            //send(newfd, )
+          
+
+          isConnected(newfd, fdmax, master, inet_ntop(remoteaddr.ss_family, get_in_addr((struct sockaddr * ) & remoteaddr), remoteIP, INET6_ADDRSTRLEN));
+
           }
 
 

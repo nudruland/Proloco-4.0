@@ -15,7 +15,46 @@ int number_combined = 0;
 uint8_t number_tavoli = 0;
 uint8_t number_plance = 0;
 
+void isConnected(int localnewfd, int localfdmax, fd_set localmaster, const char* localremoteip)
+{
+    FD_SET(localnewfd, & localmaster); // add to master set
+    if (localnewfd > localfdmax) { // keep track of the max
+      localfdmax = localnewfd;
+    }
+    //qua possiamo iniziare ad inviare i dati quando abbiamo aggiornato
+    printf("selectserver: new connection from %s on socket %d\n", localremoteip, localnewfd);
+    //send(newfd, )
+}
 
+void getNSocket(fd_set localmaster, int localfdmax, int locallistener, int locali){
+    // we got some data from a client
+    int j = 0u;
+    for (j = 0; j <= localfdmax; j++) {
+      // send to everyone!
+      if (FD_ISSET(j, & localmaster)) {
+        // except the listener and ourselves
+        if (j != locallistener && j != locali) {
+          //if (send(j, buf, nbytes, 0) == -1) {
+           // perror("send");
+          //}
+          perror("send");
+        }
+      }
+    }
+    return;
+}
+
+void deleteclient(int localnbytes, int locali, fd_set localmaster){
+    if (localnbytes == 0) {
+      // connection closed
+      printf("selectserver: socket %d hung up\n", locali);
+    } else {
+      perror("recv");
+    }
+    close(locali); // bye!
+    FD_CLR(locali, & localmaster); // remove from master set
+    return;                
+}
 
 void bubbleSort(prenotati arr[], int n) {
     for (int i = 0; i < n - 1; i++) {

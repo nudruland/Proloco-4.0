@@ -69,6 +69,8 @@ extern void txt_read(void);
 extern void divisione_piazza(void);
 extern void aggregazione_vicino(void);
 extern void composizione_tavoli(void);
+extern void deleteclient(int localnbytes, int locali, fd_set localmaster);
 extern void getNSocket(fd_set localmaster, int localfdmax, int locallistener, int locali);
+extern void isConnected(int mylocalnewfd, int localfdmax, fd_set mylocalmaster, const char* localremoteip);
 
 #endif 
