@@ -10,8 +10,11 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
+#include "header.h"
 
 #define PORT "8080" // the port users will be connecting to
+
+uint8_t packet_to_send[SIZE_PACKET_TO_SEND];
 
 void getNSocket(fd_set localmaster, int localfdmax, int locallistener, int locali){
     // we got some data from a client
@@ -21,9 +24,9 @@ void getNSocket(fd_set localmaster, int localfdmax, int locallistener, int local
       if (FD_ISSET(j, & localmaster)) {
         // except the listener and ourselves
         if (j != locallistener && j != locali) {
-          /*if (send(j, buf, nbytes, 0) == -1) {
-            perror("send");
-          }*/
+          //if (send(j, buf, nbytes, 0) == -1) {
+           // perror("send");
+          //}
           perror("send");
         }
       }
@@ -70,6 +73,12 @@ int main(void) {
   int i, j, rv;
 
   struct addrinfo hints, *ai, *p;
+
+      txt_read();
+    aggregazione_vicino();
+    composizione_tavoli();
+    divisione_piazza();
+
 
   FD_ZERO( & master); // clear the master and temp sets
   FD_ZERO( & read_fds);
@@ -147,6 +156,7 @@ int main(void) {
             }
             //qua possiamo iniziare ad inviare i dati quando abbiamo aggiornato
             printf("selectserver: new connection from %s on socket %d\n", inet_ntop(remoteaddr.ss_family, get_in_addr((struct sockaddr * ) & remoteaddr), remoteIP, INET6_ADDRSTRLEN), newfd);
+            //send(newfd, )
           }
 
 

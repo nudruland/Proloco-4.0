@@ -65,10 +65,10 @@ extern int number_combined;
 extern uint8_t number_tavoli;
 extern uint8_t number_plance;
 
-void txt_read(void);
-void divisione_piazza(void);
-void aggregazione_vicino(void);
-void composizione_tavoli(void);
-void getNSocket(fd_set localmaster, int localfdmax, int locallistener, int locali);
+extern void txt_read(void);
+extern void divisione_piazza(void);
+extern void aggregazione_vicino(void);
+extern void composizione_tavoli(void);
+extern void getNSocket(fd_set localmaster, int localfdmax, int locallistener, int locali);
 
 #endif 
