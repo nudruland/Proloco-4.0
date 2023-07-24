@@ -74,10 +74,10 @@ int main(void) {
 
   struct addrinfo hints, *ai, *p;
 
-      txt_read();
-    aggregazione_vicino();
-    composizione_tavoli();
-    divisione_piazza();
+  txt_read();
+  aggregazione_vicino();
+  composizione_tavoli();
+  divisione_piazza();
 
 
   FD_ZERO( & master); // clear the master and temp sets
@@ -155,8 +155,8 @@ int main(void) {
               fdmax = newfd;
             }
             //qua possiamo iniziare ad inviare i dati quando abbiamo aggiornato
-            printf("selectserver: new connection from %s on socket %d\n", inet_ntop(remoteaddr.ss_family, get_in_addr((struct sockaddr * ) & remoteaddr), remoteIP, INET6_ADDRSTRLEN), newfd);
-            //send(newfd, )
+
+
           }
 
 

@@ -70,5 +70,6 @@ extern void divisione_piazza(void);
 extern void aggregazione_vicino(void);
 extern void composizione_tavoli(void);
 extern void getNSocket(fd_set localmaster, int localfdmax, int locallistener, int locali);
+extern void build_packet_to_send();
 
 #endif 

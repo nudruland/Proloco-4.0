@@ -13,17 +13,25 @@
 
 #include "header.h"
 
-void build_packet_to_send(tavolo mytavolo)
+void send_all_tables(int localnewfd)
 {
-    //diocane
-    int a;
+    for(int i = 0; i < MAX_NUMBER_PLANCE; i++){
+        build_packet_to_send(i);
+        send(localnewfd, &packet_to_send[0], SIZE_PACKET_TO_SEND, 0);
+    }
+}
+
+void build_packet_to_send(int index)
+{
+
+    memset(packet_to_send, 0xFF, SIZE_PACKET_TO_SEND);
     packet_to_send[0] = PACKET_NEW_TABLE;
-    packet_to_send[1] = mytavolo.id_plancia;
-    packet_to_send[2] = mytavolo.numero_plance;
-    packet_to_send[3] = mytavolo.numero_plance * 8;
-    packet_to_send[4] = mytavolo.posti_vuoti;
-    packet_to_send[5] = mytavolo.posti_occupati;
-    memcpy((packet_to_send + 6), &(mytavolo.nome_1), sizeof(mytavolo.nome_1));
+    packet_to_send[1] = lista_tavoli[index].id_plancia;
+    packet_to_send[2] = lista_tavoli[index].numero_plance;
+    packet_to_send[3] = lista_tavoli[index].numero_plance * 8;
+    packet_to_send[4] = lista_tavoli[index].posti_vuoti;
+    packet_to_send[5] = lista_tavoli[index].posti_occupati;
+    memcpy((packet_to_send + 6), &(lista_tavoli[0].nome_1), sizeof(lista_tavoli[0].nome_1));
     return;
 }
 
